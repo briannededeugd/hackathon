@@ -1,2 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import Worldmap from "../components/Worldmap.svelte";
+  import DataFetcher from '../components/DataFetcher.svelte';
+
+</script>
+
+<body>
+    <Worldmap />
+    <DataFetcher />
+</body>
+
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+	}
+</style>
