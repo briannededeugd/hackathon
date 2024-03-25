@@ -20,7 +20,7 @@
 			container: mapContainer,
 			accessToken:
 				'pk.eyJ1IjoiYnJpYW5uZWRlZGV1Z2QiLCJhIjoiY2x1NnR2Ymk2MXlzejJpbng3bWFkbjdhdyJ9.lpu8pVnq6PKL2BglA4tPSg',
-			style: 'mapbox://styles/mapbox/satellite-v9',
+			style: 'mapbox://styles/mapbox/streets-v12',
 			projection: 'globe', // Display the map as a globe, since satellite-v9 defaults to Mercator
 			zoom: 1.5,
 			center: [-90, 40]
@@ -29,6 +29,33 @@
 		map.on('style.load', () => {
 			map.setFog({}); // Set the default atmosphere style
 		});
+
+        map.on('load', function() {
+            map.addLayer(
+                {
+                id: 'country-boundaries',
+                source: {
+                    type: 'vector',
+                    url: 'mapbox://mapbox.country-boundaries-v1',
+                },
+                'source-layer': 'country_boundaries',
+                type: 'fill',
+                paint: {
+                    // TODO: pass function to calculate color here?
+                    'fill-color': '#d2361e',
+                    'fill-opacity': 0.4,
+                },
+            },
+            'country-label'
+        );
+
+            map.setFilter('country-boundaries', [
+                "in",
+                "iso_3166_1",
+                'NL',
+                'NP'
+            ]);
+        });
 
 		// At low zooms, complete a revolution every two minutes.
 		const secondsPerRevolution = 120;
