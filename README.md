@@ -31,7 +31,7 @@ The first thing that stood out to us was the data about the amount of attendees 
 
 To get the ball rolling more than just this concept though, the team and notably Sena Nur got to making a more general concept, which looked something like this:
 
-<img width="604" alt="Sketch detailing the general idea for the project" src="./readme-images/concept-sketch.heic">
+<img width="604" alt="Sketch detailing the general idea for the project" src="./readme-images/concept-sketch.png">
 
 For our remaining data, we thought that the speakers themselves were also of course an essential key to telling the story of CSS days. We thought of a timeline where we could make a dynamic timeline of the ten editions of CSS Day. Select a year, get the avatars of speakers for that year back, and hover over them to view their name and the title of their talk. Click on them, and get to view the video of the talk along with its metadata!
 
