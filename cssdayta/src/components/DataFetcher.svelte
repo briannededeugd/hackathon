@@ -1,6 +1,6 @@
 
 <script>
-    async function test() {
+    async function getCSSDayta() {
         const response = await fetch("https://cssday.nl/data.json");
 
         if (!response.ok) {
@@ -11,8 +11,6 @@
         console.log(cssdayta);
     }
 
-    test();
+    getCSSDayta();
 </script>
 
-
-<h1>SvelteKit CSSDay</h1>
