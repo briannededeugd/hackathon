@@ -1,2 +1,14 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import Worldmap from "../components/Worldmap.svelte";
+</script>
+
+<body>
+    <Worldmap />
+</body>
+
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+	}
+</style>
