@@ -149,7 +149,7 @@ onMount(rotateCarousel);
     li:nth-child(9n+7) { background: hsla(240, 100%, 50%, 0.8); }
     li:nth-child(9n+8) { background: hsla(280, 100%, 50%, 0.8); }
     li:nth-child(9n+9) { background: hsla(280, 100%, 50%, 0.8); }
-    li:nth-child(9n+0) { background: hsla(320, 100%, 50%, 0.8); }
+    li:nth-child(9n+10) { background: hsla(320, 100%, 50%, 0.8); }
 
     li:nth-child(1) { transform: rotateY(  0deg) translateZ(288px); }
     li:nth-child(2) { transform: rotateY( 36deg) translateZ(288px); }
@@ -160,7 +160,7 @@ onMount(rotateCarousel);
     li:nth-child(7) { transform: rotateY(216deg) translateZ(288px); }
     li:nth-child(8) { transform: rotateY(252deg) translateZ(288px); }
     li:nth-child(9) { transform: rotateY(288deg) translateZ(288px); }
-    li:nth-child(9) { transform: rotateY(324deg) translateZ(288px); }
+    li:nth-child(10) { transform: rotateY(324deg) translateZ(288px); }
 
 
 </style>
