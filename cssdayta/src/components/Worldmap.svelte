@@ -21,41 +21,45 @@
 			accessToken:
 				'pk.eyJ1IjoiYnJpYW5uZWRlZGV1Z2QiLCJhIjoiY2x1NnR2Ymk2MXlzejJpbng3bWFkbjdhdyJ9.lpu8pVnq6PKL2BglA4tPSg',
 			style: 'mapbox://styles/mapbox/streets-v12',
-			projection: 'globe', // Display the map as a globe, since satellite-v9 defaults to Mercator
+			projection: 'globe',
 			zoom: 1.5,
 			center: [-90, 40]
+		});
+
+		// Adjust zoom for smaller screens
+		window.addEventListener('resize', function () {
+			if (window.innerWidth <= 768) {
+				map.setZoom(0.5); // Adjust zoom level for smaller screens
+			} else {
+				map.setZoom(1.5); // Default zoom level for larger screens
+			}
 		});
 
 		map.on('style.load', () => {
 			map.setFog({}); // Set the default atmosphere style
 		});
 
-        map.on('load', function() {
-            map.addLayer(
-                {
-                id: 'country-boundaries',
-                source: {
-                    type: 'vector',
-                    url: 'mapbox://mapbox.country-boundaries-v1',
-                },
-                'source-layer': 'country_boundaries',
-                type: 'fill',
-                paint: {
-                    // TODO: pass function to calculate color here?
-                    'fill-color': '#d2361e',
-                    'fill-opacity': 0.4,
-                },
-            },
-            'country-label'
-        );
+		map.on('load', function () {
+			map.addLayer(
+				{
+					id: 'country-boundaries',
+					source: {
+						type: 'vector',
+						url: 'mapbox://mapbox.country-boundaries-v1'
+					},
+					'source-layer': 'country_boundaries',
+					type: 'fill',
+					paint: {
+						// TODO: pass function to calculate color here?
+						'fill-color': '#d2361e',
+						'fill-opacity': 0.4
+					}
+				},
+				'country-label'
+			);
 
-            map.setFilter('country-boundaries', [
-                "in",
-                "iso_3166_1",
-                'NL',
-                'NP'
-            ]);
-        });
+			map.setFilter('country-boundaries', ['in', 'iso_3166_1', 'NL', 'NP']);
+		});
 
 		// At low zooms, complete a revolution every two minutes.
 		const secondsPerRevolution = 120;
@@ -116,6 +120,9 @@
 		});
 
 		spinGlobe();
+
+		const nav = new pkg.NavigationControl();
+		map.addControl(nav, 'bottom-left');
 	});
 </script>
 
