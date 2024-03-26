@@ -1,17 +1,31 @@
 <script>
 	import Navbar from "../components/Navbar.svelte"
 	import Worldmap from "../components/Worldmap.svelte";
+  	import Navigation from '../components/Navigation.svelte';
+  	import { onMount } from 'svelte';
 
-  import Navigation from '../components/Navigation.svelte';
+	let theme = 'standard';
+
+	// Function to toggle between themes
+	function toggleTheme() {
+		theme = theme === 'standard' ? 'dynamic' : 'standard';
+	}
+
+	// Example of using onMount to perform initialization
+	onMount(() => {
+		// You can perform any initialization here
+	});
 </script>
 
-<!-- <header>
-	<Navigation />
-</header> -->
-
 <header>
-	<Navbar />
+	<button on:click={toggleTheme}>Theme</button>
+	{#if theme === 'standard'}
+  		<Navigation />
+	{:else}
+  		<Navbar />
+	{/if}
 </header>
+
 
 <body>
     <Worldmap />
@@ -35,6 +49,13 @@
 		justify-content: center;
 		position: absolute;
 		width: 100vw;
+	}
+
+	button {
+		position: absolute;
+		left: 90vw;
+		top: 2em;
+		z-index: 15;
 	}
 
 </style>
