@@ -1,9 +1,8 @@
 <script>
 	import Navbar from "../components/Navbar.svelte"
 	import Worldmap from "../components/Worldmap.svelte";
-  import DataFetcher from '../components/DataFetcher.svelte';
-  import Navigation from '../components/Navigation.svelte';
 
+  import Navigation from '../components/Navigation.svelte';
 </script>
 
 <!-- <header>
@@ -16,7 +15,6 @@
 
 <body>
     <Worldmap />
-    <DataFetcher />
 </body>
 
 <style>
