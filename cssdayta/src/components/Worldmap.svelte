@@ -104,7 +104,6 @@
 			center: [-90, 40]
 		});
 
-        // Adjust zoom for smaller screens
 		window.addEventListener('resize', function () {
 			if (window.innerWidth <= 768) {
 				map.setZoom(0.5); // Adjust zoom level for smaller screens
@@ -112,7 +111,6 @@
 				map.setZoom(1.5); // Default zoom level for larger screens
 			}
 		});
-
 
 		map.on('style.load', () => {
 			map.setFog({}); // Set the default atmosphere style
