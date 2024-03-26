@@ -83,6 +83,7 @@
   
       nav ul li.selected {
           scroll-snap-align: center; /* Adjust alignment as needed */
+          scroll-behavior: smooth;
           transition: transform 1s ease-in-out; /* Smooth transition for scrolling */
       }
   
