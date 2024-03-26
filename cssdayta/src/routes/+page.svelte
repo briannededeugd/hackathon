@@ -6,9 +6,9 @@
 
 </script>
 
-<header>
+<!-- <header>
 	<Navigation />
-</header>
+</header> -->
 
 <header>
 	<Navbar />
@@ -26,6 +26,11 @@
 		margin: 0;
 		padding: 0;
 		font-family: "Source Code Pro", monospace;
+	}
+
+	header {
+		display: flex;
+		justify-content: center;
 	}
 
 </style>
