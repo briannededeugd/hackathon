@@ -1,8 +1,13 @@
 <script>
+	import Navbar from "../components/Navbar.svelte"
 	import Worldmap from "../components/Worldmap.svelte";
-  import DataFetcher from '../components/DataFetcher.svelte';
+  	import DataFetcher from '../components/DataFetcher.svelte';
 
 </script>
+
+<header>
+	<Navbar />
+</header>
 
 <body>
     <Worldmap />
