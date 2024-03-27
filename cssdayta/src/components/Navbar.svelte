@@ -17,6 +17,7 @@ onMount(() => {
         console.log(cssdayta);
     });
 });
+
  
 // Function to rotate the carousel
 function rotateCarousel() {
@@ -58,7 +59,7 @@ onMount(rotateCarousel);
         <ul bind:this={carousel} style="transform: translateZ(-320px) rotateY({selectedIndex * -36}deg)">
         
             {#each Object.keys(cssdayta) as year, i}
-                 <li class={i === selectedIndex} style="--theme-color:{cssdayta[year].color.hex}"><a href="/">{year}</a></li>
+                 <li class:selectedIndex={i === selectedIndex} style="--theme-color:{cssdayta[year].color.hex}"><a href="/">{year}</a></li>
             {/each}
  
         </ul>
@@ -96,6 +97,7 @@ onMount(rotateCarousel);
     }
     h2 {
         margin: 0;
+        text-align: center;
     }
     
     p {
