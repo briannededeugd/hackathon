@@ -3,6 +3,7 @@
 	const { Map } = pkg;
 	import '/node_modules/mapbox-gl/dist/mapbox-gl.css';
     import {cssdaytaStore} from '../dataStore.js'
+	import {selectedYearStore} from './Navigation.svelte'
 
 	let map;
 	let mapContainer;
@@ -32,8 +33,8 @@
 
         for (const [iso_3166_1, attendees] of Object.entries($cssdaytaStore['2018'].attendees.countries)) {
             var percentage = (attendees / $cssdaytaStore['2018'].attendees.count) * 100 ;
-            console.log('ISO:', iso_3166_1);
-            console.log('PERCENTAGE:', percentage);
+            // console.log('ISO:', iso_3166_1);
+            // console.log('PERCENTAGE:', percentage);
             const color = 'hotpink';
             paintExpressions.push(iso_3166_1, color);
         }      
@@ -69,6 +70,7 @@
 //     });
 // }
 	onMount(() => {
+		console.log($selectedYearStore);
 		map = new Map({
 			container: mapContainer,
 			accessToken:
