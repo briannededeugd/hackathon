@@ -27,25 +27,15 @@
         }
     }
 
-    // Access the countries object key
-    // $: if ($cssdaytaStore) {
-    //     console.log($cssdaytaStore['2013'].attendees.countries);
-    // }
-
-    //  TODO: Pick color by year.
     function generatePaintFillColor() {
         const paintExpressions = ['match', ['get', 'iso_3166_1']];
 
-        for (const [countrycode, attendees] of Object.entries($cssdaytaStore['2018'].attendees.countries)) {
+        for (const [iso_3166_1, attendees] of Object.entries($cssdaytaStore['2018'].attendees.countries)) {
             var percentage = (attendees / $cssdaytaStore['2018'].attendees.count) * 100 ;
-            var opacity = percentage / 1;
-            // Scale not correct bc why is the NL the same color as other stuff.
-            const color = percentage > 1 ? 'purple' : percentage > .80 ? '#ff0000' : percentage > .60 ? '#ff9900' : percentage > .40 ? '#ffff00' : percentage > .20 ? '#00ff00' : '#0000ff';
-            paintExpressions.push(countrycode, color);
-            
-            // console.log('OPACITY:', opacity);
-            // console.log('ISO:', countrycode);
-            // console.log('PERCENTAGE:', percentage);
+            console.log('ISO:', iso_3166_1);
+            console.log('PERCENTAGE:', percentage);
+            const color = 'hotpink';
+            paintExpressions.push(iso_3166_1, color);
         }      
      
         paintExpressions.push('rgba(0, 0, 0, 0)');
@@ -53,38 +43,32 @@
         return paintExpressions;
     }
 
-    // TODO: Set opacity by attendees %.
-    function generatePaintFillOpacity() {
-        const paintExpressions = ['match', ['get', 'iso_3166_1']];
+    //  TODO: Set color by year.
+//     async function generatePaintFillColor(year) {
 
-        for (const [countrycode, attendees] of Object.entries($cssdaytaStore['2018'].attendees.countries)) {
-             var percentage = (attendees / $cssdaytaStore['2018'].attendees.count) * 100 ;
-            var opacity = percentage / 1;
-            // console.log('OPACITY:', opacity);
-            console.log('ISO:', iso_3166_1);
-            console.log('PERCENTAGE:', percentage);
-            // schaal not correct bc why is the nl the same color as other stuff.
-            const color = percentage > 1 ? 'purple' : percentage > .80 ? '#ff0000' : percentage > .60 ? '#ff9900' : percentage > .40 ? '#ffff00' : percentage > .20 ? '#00ff00' : '#0000ff';
-
-
-            paintExpressions.push(iso_3166_1, color);
-        }      
-     
-        paintExpressions.push('rgba(0, 0, 0, 0)');
-
-        return paintExpressions;
-        }
+//     return new Promise((resolve, reject) => {
+//         try {
+//             const paintExpressions = ['match', ['get', 'iso_3166_1']];
+        
+//             for (const [year, item] of Object.entries($cssdaytaStore)) {
+//                 const color = item.color.hex;
+//                 const attendeesTotal = item.attendees.count;
+//                 const allCountriesPerYear = item.attendees.countries;
+//                 // console.log("ALL COUNTRIES PER YEAR:", allCountriesPerYear);
     
-
-
+//                 for (const [country, countriesAttendees] of Object.entries(allCountriesPerYear)) {
+//                     let country_color = {'country' : country, 'color' : color}
+//                     paintExpressions.push(country_color);
+//                 }
+//             }
+//             console.log(paintExpressions)
+//             resolve(paintExpressions);
+//         } catch (error) {
+//             reject(error);
+//         }
+//     });
+// }
 	onMount(() => {
-        cssdaytaStore.subscribe((value) => {
-            cssdayta = value;
-            console.log(cssdayta);
-        })
-
-		// const initialState = { lng: lng, lat: lat, zoom: zoom };
-
 		map = new Map({
 			container: mapContainer,
 			accessToken:
@@ -108,7 +92,24 @@
 		});
 
         map.on('load', () => {
-            map.addLayer(
+        //     map.addLayer(
+        //         {
+        //         id: 'one',
+        //         source: {
+        //             type: 'vector',
+        //             url: 'mapbox://mapbox.country-boundaries-v1',
+        //         },
+        //         'source-layer': 'country_boundaries',
+        //         type: 'fill',
+        //         paint: {
+        //             'fill-color': 'white',
+        //             'fill-opacity': .3,
+        //         },
+        //     },
+        //     'country-label'
+        // );
+
+          map.addLayer(
                 {
                 id: 'one',
                 source: {
@@ -118,52 +119,23 @@
                 'source-layer': 'country_boundaries',
                 type: 'fill',
                 paint: {
-                    'fill-color': 'white',
-                    'fill-opacity': .3,
-                },
-            },
-            'country-label'
-        );
-
-          map.addLayer(
-                {
-                id: 'country-boundaries',
-                source: {
-                    type: 'vector',
-                    url: 'mapbox://mapbox.country-boundaries-v1',
-                },
-                'source-layer': 'country_boundaries',
-                type: 'fill',
-                paint: {
                     'fill-color': generatePaintFillColor(),
-                    'fill-opacity': .1,
+                    'fill-opacity': 1,
                 },
             },
-            
             'country-label'
         );
 
-        map.addLayer({
-            'id': 'outline',
-            'type': 'line',
-            'source': {
-                'type': 'vector',
-                'url': 'mapbox://mapbox.country-boundaries-v1',
-            },
-            'source-layer': 'country_boundaries',
-            'layout': {},
-            'paint': {
-                'line-color': generatePaintFillColor(),
-                'line-width': 1 
-            }      
-        });
+
+        
 
         // const isoValues = countryData.map(country => country.iso_3166_1);
 
         // map.setFilter('country-boundaries', ["in", "iso_3166_1", ...isoValues]);
-        // map.setFilter('outline', ["in", "iso_3166_1", ...isoValues]);
-
+        // map.setFilter('outline', ["in", "iso_3166_1", ...isoValues]);        
         });
+
+        
 
 		// At low zooms, complete a revolution every two minutes.
 		const secondsPerRevolution = 120;
@@ -230,6 +202,12 @@
 
         const nav = new pkg.NavigationControl();
 		map.addControl(nav, 'bottom-left');
+
+          const unsubscribe = cssdaytaStore.subscribe((value) => {
+            cssdayta = value;
+            console.log(cssdayta);
+        })
+        return unsubscribe;
 	});
 </script>
 
