@@ -2,7 +2,7 @@
 	import pkg from 'mapbox-gl';
 	const { Map } = pkg;
 	import '/node_modules/mapbox-gl/dist/mapbox-gl.css';
-    import {cssdaytaStore} from '../dataStore.js'
+  import {cssdaytaStore} from '../dataStore.js'
 	import {selectedYearStore} from './Navigation.svelte'
 
 	let map;
@@ -28,22 +28,21 @@
         }
     }
 
-    function generatePaintFillColor() {
+    function generatePaintFillColor(year) {
         const paintExpressions = ['match', ['get', 'iso_3166_1']];
 
-        for (const [iso_3166_1, attendees] of Object.entries($cssdaytaStore['2018'].attendees.countries)) {
-            var percentage = (attendees / $cssdaytaStore['2018'].attendees.count) * 100 ;
-            // console.log('ISO:', iso_3166_1);
-            // console.log('PERCENTAGE:', percentage);
-            const color = 'hotpink';
+        for (const [iso_3166_1] of Object.entries($cssdaytaStore[year].attendees.countries)) {
+            const color = $cssdaytaStore[year].color.hex;
             paintExpressions.push(iso_3166_1, color);
+            // console.log('ISO:', iso_3166_1);
+            // console.log('COLOR:', color);
         }      
      
         paintExpressions.push('rgba(0, 0, 0, 0)');
 
         return paintExpressions;
     }
-
+    
     //  TODO: Set color by year.
 //     async function generatePaintFillColor(year) {
 
@@ -94,24 +93,7 @@
 		});
 
         map.on('load', () => {
-        //     map.addLayer(
-        //         {
-        //         id: 'one',
-        //         source: {
-        //             type: 'vector',
-        //             url: 'mapbox://mapbox.country-boundaries-v1',
-        //         },
-        //         'source-layer': 'country_boundaries',
-        //         type: 'fill',
-        //         paint: {
-        //             'fill-color': 'white',
-        //             'fill-opacity': .3,
-        //         },
-        //     },
-        //     'country-label'
-        // );
-
-          map.addLayer(
+            map.addLayer(
                 {
                 id: 'one',
                 source: {
@@ -121,23 +103,47 @@
                 'source-layer': 'country_boundaries',
                 type: 'fill',
                 paint: {
-                    'fill-color': generatePaintFillColor(),
-                    'fill-opacity': 1,
+                    'fill-color': 'white',
+                    'fill-opacity': .3,
                 },
             },
             'country-label'
         );
 
+          map.addLayer(
+                {
+                id: 'country_boundaries',
+                source: {
+                    type: 'vector',
+                    url: 'mapbox://mapbox.country-boundaries-v1',
+                },
+                'source-layer': 'country_boundaries',
+                type: 'fill',
+                paint: {
+                    'fill-color': generatePaintFillColor(2018),
+                    'fill-opacity': 1,
+                },
+            },
+            'country-label'
+        );   
 
-        
-
-        // const isoValues = countryData.map(country => country.iso_3166_1);
-
-        // map.setFilter('country-boundaries', ["in", "iso_3166_1", ...isoValues]);
-        // map.setFilter('outline', ["in", "iso_3166_1", ...isoValues]);        
+        map.addLayer({
+            'id': 'outline',
+            'type': 'line',
+            'source': {
+                'type': 'vector',
+                'url': 'mapbox://mapbox.country-boundaries-v1',
+            },
+            'source-layer': 'country_boundaries',
+            'layout': {},
+            'paint': {
+                'line-color': 'black',
+                'line-width': .1, 
+            }      
         });
-
+        });
         
+
 
 		// At low zooms, complete a revolution every two minutes.
 		const secondsPerRevolution = 120;
@@ -202,14 +208,18 @@
 
 		spinGlobe();
 
+
         const nav = new pkg.NavigationControl();
 		map.addControl(nav, 'bottom-left');
+
+        
 
           const unsubscribe = cssdaytaStore.subscribe((value) => {
             cssdayta = value;
             console.log(cssdayta);
         })
         return unsubscribe;
+
 	});
 </script>
 
