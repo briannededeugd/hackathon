@@ -2,8 +2,9 @@
 	import pkg from 'mapbox-gl';
 	const { Map } = pkg;
 	import '/node_modules/mapbox-gl/dist/mapbox-gl.css';
-    import {cssdaytaStore} from '../dataStore.js';
-    
+  import {cssdaytaStore} from '../dataStore.js'
+	import {selectedYearStore} from './Navigation.svelte'
+
 	let map;
 	let mapContainer;
 	let lng, lat, zoom;
@@ -68,6 +69,7 @@
 //     });
 // }
 	onMount(() => {
+		console.log($selectedYearStore);
 		map = new Map({
 			container: mapContainer,
 			accessToken:
