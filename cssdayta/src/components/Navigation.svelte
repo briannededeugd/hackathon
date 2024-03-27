@@ -3,17 +3,27 @@
     import { onMount } from 'svelte';
     import { cssdaytaStore } from '../dataStore.js';
 
+    let prevArrow = "../images/prev-arrow.png";
+    let nextArrow = "../images/next-arrow.png";
+
     let index = 0;
     let activeIndex = 0;
     let selectedYear = null;
     let cssdayta = {};
 
+    
     // Subscribe to cssdaytaStore when the component mounts
     onMount(() => {
         const unsubscribe = cssdaytaStore.subscribe((value) => {
             cssdayta = value; // Update cssdayta when the store changes
             console.log(cssdayta);
+
+            // Set selectedYear to 2024 if it's not already set
+            if (!selectedYear && cssdayta && Object.keys(cssdayta).includes('2024')) {
+                showSlide(Object.keys(cssdayta).length - 1); // Start with year 2024 as default
+            }
         });
+
 
         return unsubscribe; // Unsubscribe from the store when the component is destroyed
     });
@@ -37,26 +47,51 @@
   <nav>
     <h1>CSS Day</h1>
     <a href="#" aria-label="CSS Day Logo">
-        <img src="https://cssday.nl/_img/cssday-logo.svg">
+        <!-- <img src="https://cssday.nl/_img/cssday-logo.svg" alt="The CSS Day Logo"> -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 614 383" width="100%" height="100%">
+            <rect width="184" height="46" rx="7" ry="7"/>
+            <rect width="46" height="122" y="55" rx="7" ry="7"/>
+            <rect width="127" height="46" x="57" y="131" rx="7" ry="7"/>
+            <rect width="46" height="110" x="215" rx="7" ry="7"/>
+            <rect width="128" height="46" x="271" rx="7" ry="7"/>
+            <rect width="64" height="46" x="275" y="65" rx="7" ry="7"/>
+            <rect width="46" height="112" x="353" y="65" rx="7" ry="7"/>
+            <rect width="128" height="46" x="215" y="131" rx="7" ry="7"/>
+            <rect width="46" height="110" x="430" rx="7" ry="7"/>
+            <rect width="128" height="46" x="486" rx="7" ry="7"/>
+            <rect width="64" height="46" x="490" y="65" rx="7" ry="7"/>
+            <rect width="46" height="112" x="568" y="65" rx="7" ry="7"/>
+            <rect width="128" height="46" x="430" y="131" rx="7" ry="7"/>
+            <rect width="127" height="46" y="206" rx="7" ry="7"/>
+            <rect width="46" height="122" x="138" y="206" rx="7" ry="7"/>
+            <rect width="46" height="122" y="261" rx="7" ry="7"/>
+            <rect width="127" height="46" x="57" y="337" rx="7" ry="7"/>
+            <rect width="128" height="46" x="215" y="206" rx="7" ry="7"/>
+            <rect width="46" height="177" x="353" y="206" rx="7" ry="7"/>
+            <rect width="46" height="122" x="215" y="261" rx="7" ry="7"/>
+            <rect width="64" height="46" x="278" y="280" rx="7" ry="7"/>
+            <rect width="46" height="110" x="430" y="206" rx="7" ry="7"/>
+            <rect width="46" height="177" x="568" y="206" rx="7" ry="7"/>
+            <rect width="64" height="46" x="494" y="270" rx="7" ry="7"/>
+            <rect width="107" height="46" x="451" y="337" rx="7" ry="7"/>
+        </svg>
     </a>
 
-    <h2>Title</h2>
+    <h2>Attendees</h2>
 
     <div class="carousel">
-        <button class="prev" on:click={() => showSlide(-1)}></button>
+        <button aria-label="Previous button" class="prev" on:click={() => showSlide(-1)}>
+            <img aria-hidden="true" focusable="false" src={prevArrow} alt="Previous arrow icon">
+        </button>
         <ul>
             {#each Object.keys(cssdayta) as year, i}
-                <li class:selected={i === activeIndex}><a href="#">{year}</a></li>
+                <li class:selected={i === activeIndex}><a href="{cssdayta[selectedYear].link}">{year}</a></li>
             {/each}
         </ul>
-        <button class="next" on:click={() => showSlide(1)}></button>
+        <button aria-label="Next button" class="next" on:click={() => showSlide(1)}>
+            <img aria-hidden="true" focusable="false"src={nextArrow} alt="Next arrow icon">
+        </button>
     </div>
-
-    {#if selectedYear && cssdayta?.[selectedYear]?.color}
-        <p>The color hex for {selectedYear} is: {cssdayta[selectedYear].color.hex}</p>
-    {:else}
-        <p>No color data available for {selectedYear}</p>
-    {/if}
 </nav>
 
   <!-- Styling navigation bar -->
@@ -68,11 +103,13 @@
       h2 {
         margin: 0;
         padding: 0.5em;
-        border: 3px solid  #cd853f;
+        border: 3px solid var(--assigned-color);
       }
 
       nav {
         display: flex;
+        justify-content: center;
+        flex-direction: row;
         gap: 2em;
         align-items: center;
         position: absolute;
@@ -81,12 +118,10 @@
     }
   
       nav a:nth-of-type(1) {
-          /* display: flex;
-          justify-content: space-between; */
           width: 3em;
           height: 1.6em;
           text-align: center;
-          /* align-items: center; */
+    
       }
 
     
@@ -94,16 +129,23 @@
       .carousel {
           display: flex;
           justify-content: center;
+          align-items: center;
+          gap:0.5em;
   
           & button {
               border: none;
               background-color: var(--assigned-color);
               border-radius: 0.5em;
-              width: 4em;
+              width: 3.5em;
               height: 4em;
               cursor: pointer;
               padding: 0;
               margin: 0;
+          }
+
+          & button img {
+            width: 2em;
+            text-align: center;
           }
       }
   
@@ -114,20 +156,27 @@
             width: clamp(5rem, 15%, 20%);
         }
     }
+
+    svg {
+        fill: var(--assigned-color);
+        /* filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 1)); */
+        /* background-color: white; */
+    }
   
       nav ul {
           display: flex;
           list-style: none;
           padding: 0;
           margin: 0;
+          scroll-padding: 0;
           
           scrollbar-width: none;
           
           overflow-x: scroll;
           scroll-snap-type: x mandatory; /* Snap items horizontally */
   
-          width: 11vw;
-          gap: 1.5em;
+          width: clamp(5em, 4em, 4em);
+          gap: 4em;
           transition: transform 0.3s ease;
           
       }
@@ -146,14 +195,34 @@
 
 
       /* Media query */
-      @media (width > 35em) {
+      @media (width < 30em) {
         nav {
-            display: flex;
-            justify-content: center;
+            flex-wrap: wrap;
         }
+
+        .carousel {
+            gap: 0.5em;
+        }
+
+        .carousel button {
+            width: 2.7em;
+            height: 3em; 
+        }
+
+        .carousel button img {
+            width: 1.5em;
+        }
+
+        nav ul {
+            width: 20vw;
+        }
+
+        nav ul li a {
+              font-size: 1.8em;
+          }
       }
   
-      @media screen and (max-width: 25em) { 
+      @media (max-width: 20em) { 
           nav ul li a {
               font-size: 1.5em;
           }
