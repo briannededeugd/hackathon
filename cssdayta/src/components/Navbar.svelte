@@ -8,16 +8,16 @@ const dispatch = createEventDispatcher();
 let selectedIndex = 0;
 let carousel;
 let cssdayta = {};
+let selectedYear = 0;
+
 
 onMount(() => {
     cssdaytaStore.subscribe((value) => {
-        cssdayta = value;
-        console.log(cssdayta)
-    })
+        cssdayta = value; 
+        console.log(cssdayta);
+    });
 });
-
-console.log($cssdaytaStore['2013'].color.hex)
-
+ 
 // Function to rotate the carousel
 function rotateCarousel() {
 const cellCount = 10;
@@ -39,6 +39,7 @@ rotateCarousel();
 
 onMount(rotateCarousel);
 
+
 </script>
 
 <nav>
@@ -46,17 +47,23 @@ onMount(rotateCarousel);
     <a href="/" aria-label="CSS Day Logo">
       <img src="https://cssday.nl/_img/cssday-logo.svg" alt="CSS Day">
     </a>
-   
-    <h2>Title</h2> 
+    
+        {#each Object.keys(cssdayta) as year, i}
+            {#if i === selectedIndex}
+                <h2>{cssdayta[year].title}</h2> 
+            {/if}
+        {/each}
+
     <div class="carousel" >
         <ul bind:this={carousel} style="transform: translateZ(-320px) rotateY({selectedIndex * -36}deg)">
-            
-
-            {#each [2024, 2023, 2022, 2019, 2018, 2017, 2016, 2015, 2014, 2013] as year}
-                 <li><a href="/">{year}</a></li>
+        
+            {#each Object.keys(cssdayta) as year, i}
+                 <li class={i === selectedIndex} style="--theme-color:{cssdayta[year].color.hex}"><a href="/">{year}</a></li>
             {/each}
+ 
         </ul>
     </div>
+    
     <p>
         <button class="previous-button" on:click={previous}>Previous</button>
         <button class="next-button" on:click={next}>Next</button>
@@ -160,16 +167,10 @@ onMount(rotateCarousel);
         box-shadow: 2px #000080 ;
     }
 
-    li:nth-child(n+1) { background: #cd853f ; }
-    li:nth-child(n+2) { background: #9932cc ; }
-    li:nth-child(n+3) { background: #3cb371 ; }
-    li:nth-child(n+4) { background: #00bfff ; }
-    li:nth-child(n+5) { background: #ff6347 ; }
-    li:nth-child(n+6) { background: #daa520 ; }
-    li:nth-child(n+7) { background: #ff69b4; }
-    li:nth-child(n+8) { background: #6b8e23; }
-    li:nth-child(n+9) { background: #000080; }
-    li:nth-child(n+10) { background: #ff0000; }
+    li {
+        --theme-color: peru;
+        background: var(--theme-color);
+    }
 
     li:nth-child(1) { transform: rotateY(  0deg) translateZ(320px); }
     li:nth-child(2) { transform: rotateY( 36deg) translateZ(320px); }
