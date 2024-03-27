@@ -12,7 +12,10 @@
 </script>
 
 <header>
-	<button on:click={toggleTheme}>Theme</button>
+	<div>
+		<button aria-label="Change theme" class="themeButton {theme === 'dynamic' ? 'active' : ''}" on:click={toggleTheme}></button>
+	</div>
+
 	{#if theme === 'standard'}
   		<Navigation />
 	{:else}
@@ -45,11 +48,50 @@
 		width: 100vw;
 	}
 
-	button {
+	div {
 		position: absolute;
 		left: 90vw;
 		top: 2em;
 		z-index: 15;
 	}
+
+	.themeButton {
+		width: 60px;
+		height: 30px;
+		background-color: #ccc;
+		border: none;
+		border-radius: 1.2em;
+		cursor: pointer;
+		position: relative;
+	}
+
+	.themeButton::before {
+			content: '';
+			position: absolute;
+			width: 1.8em;
+			height: 1.8em;
+			background-color: white;
+			border-radius: 50%;
+			top: 0.21em;
+			left: 0.2em;
+			transition: transform 0.3s;
+			transform: translateX(2.3em);
+	}
+
+	.themeButton.active {
+		background-color: green;
+	}
+		
+	.themeButton.active::before {
+		transform: translateX(0);
+	}
+
+	/* Button placement */
+	@media (width < 42em) {
+        div {
+            top: 90vh;
+			left: 80vw;
+        }
+      }
 
 </style>
