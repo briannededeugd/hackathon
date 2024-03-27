@@ -13,10 +13,6 @@ async function getCSSDayta() {
 	cssdaytaStore.set(cssdayta);
 }
 
-const date = new Date();
-const hours = date.getHours();
-console.log(hours);
-
 getCSSDayta();
 
 export let cssdaytaStore = writable(cssdayta);

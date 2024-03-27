@@ -1,5 +1,4 @@
 <script>
-    // TODO: Make button for zoom for accessibility.
 	import pkg from 'mapbox-gl';
 	const { Map } = pkg;
 	import '/node_modules/mapbox-gl/dist/mapbox-gl.css';
@@ -15,76 +14,68 @@
 	zoom = 9;
 
 	import { onMount, onDestroy } from 'svelte';
-	import { get } from 'svelte/store';
 
-    const countryData = [
-        { iso_3166_1: 'NL', population: 1000000 }, 
-        { iso_3166_1: 'NP', population: 5000000 }  ,
-        { iso_3166_1: 'SE', population: 5000000 }  ,
-        { iso_3166_1: 'GR', population: 5000000 }  ,
-    ];
+    function checkTime() {
+        const date = new Date();
+        const hours = date.getHours();
+        console.log(`${hours}:00`);
 
-    // console.log(cssdaytaStore)
-
-    const cssdaytaObject = {
-    "2013": {
-        "days": 1,
-        "date": [
-            "2013-06-14"
-        ],
-        "title": "CSS Day 2013",
-        "link": "https://cssday.nl/2013",
-        "venue": "Compagnietheater",
-        "price": 250,
-        "color": {
-            "name": "red",
-            "hex": "#ff0000"
-        },
-        "attendees": {
-            "count": 246,
-            "countries": {
-                "NL": 178,
-                "UK": 17,
-                "DE": 16,
-                "BE": 7,
-                "FR": 3,
-                "CH": 3,
-                "US": 3,
-                "GR": 3,
-                "RU": 3,
-                "NO": 2,
-                "SK": 2,
-                "SE": 2,
-                "IT": 1,
-                "PL": 1,
-                "DK": 1,
-                "ES": 1,
-                "JP": 1,
-                "ZA": 1,
-                "SG": 1
-            }
+        if (hours >= 18) {
+            return `mapbox://styles/mapbox/satellite-streets-v12`;
+        } else {
+            return `mapbox://styles/mapbox/streets-v12`
         }
     }
-};
 
     // Access the countries object key
-    $: if ($cssdaytaStore) {
-        console.log($cssdaytaStore['2013'].attendees.countries);
-    }
+    // $: if ($cssdaytaStore) {
+    //     console.log($cssdaytaStore['2013'].attendees.countries);
+    // }
 
-    function generatePaint() {
+    //  TODO: Pick color by year.
+    function generatePaintFillColor() {
         const paintExpressions = ['match', ['get', 'iso_3166_1']];
 
-        for (const [iso_3166_1, attendees] of Object.entries($cssdaytaStore['2013'].attendees.countries)) {
-            console.log(`${iso_3166_1}: ${attendees}`);
-            const color = attendees > 100 ? '#ff0000' : '#00ff00'; 
-            paintExpressions.push(iso_3166_1, color);
-        }
-
+        for (const [countrycode, attendees] of Object.entries($cssdaytaStore['2018'].attendees.countries)) {
+            var percentage = (attendees / $cssdaytaStore['2018'].attendees.count) * 100 ;
+            var opacity = percentage / 1;
+            // Scale not correct bc why is the NL the same color as other stuff.
+            const color = percentage > 1 ? 'purple' : percentage > .80 ? '#ff0000' : percentage > .60 ? '#ff9900' : percentage > .40 ? '#ffff00' : percentage > .20 ? '#00ff00' : '#0000ff';
+            paintExpressions.push(countrycode, color);
+            
+            // console.log('OPACITY:', opacity);
+            // console.log('ISO:', countrycode);
+            // console.log('PERCENTAGE:', percentage);
+        }      
+     
         paintExpressions.push('rgba(0, 0, 0, 0)');
 
         return paintExpressions;
     }
+
+    // TODO: Set opacity by attendees %.
+    function generatePaintFillOpacity() {
+        const paintExpressions = ['match', ['get', 'iso_3166_1']];
+
+        for (const [countrycode, attendees] of Object.entries($cssdaytaStore['2018'].attendees.countries)) {
+             var percentage = (attendees / $cssdaytaStore['2018'].attendees.count) * 100 ;
+            var opacity = percentage / 1;
+            // console.log('OPACITY:', opacity);
+            console.log('ISO:', iso_3166_1);
+            console.log('PERCENTAGE:', percentage);
+            // schaal not correct bc why is the nl the same color as other stuff.
+            const color = percentage > 1 ? 'purple' : percentage > .80 ? '#ff0000' : percentage > .60 ? '#ff9900' : percentage > .40 ? '#ffff00' : percentage > .20 ? '#00ff00' : '#0000ff';
+
+
+            paintExpressions.push(iso_3166_1, color);
+        }      
+     
+        paintExpressions.push('rgba(0, 0, 0, 0)');
+
+        return paintExpressions;
+        }
+    
+
 
 	onMount(() => {
         cssdaytaStore.subscribe((value) => {
@@ -92,16 +83,16 @@
             console.log(cssdayta);
         })
 
-		const initialState = { lng: lng, lat: lat, zoom: zoom };
+		// const initialState = { lng: lng, lat: lat, zoom: zoom };
 
 		map = new Map({
 			container: mapContainer,
 			accessToken:
 				'pk.eyJ1IjoiYnJpYW5uZWRlZGV1Z2QiLCJhIjoiY2x1NnR2Ymk2MXlzejJpbng3bWFkbjdhdyJ9.lpu8pVnq6PKL2BglA4tPSg',
-			style: 'mapbox://styles/mapbox/streets-v12',
+			style: checkTime(),
 			projection: 'globe',
 			zoom: 1.5,
-			center: [-90, 40]
+			center: [20, 40]
 		});
 
 		window.addEventListener('resize', function () {
@@ -119,6 +110,23 @@
         map.on('load', () => {
             map.addLayer(
                 {
+                id: 'one',
+                source: {
+                    type: 'vector',
+                    url: 'mapbox://mapbox.country-boundaries-v1',
+                },
+                'source-layer': 'country_boundaries',
+                type: 'fill',
+                paint: {
+                    'fill-color': 'white',
+                    'fill-opacity': .3,
+                },
+            },
+            'country-label'
+        );
+
+          map.addLayer(
+                {
                 id: 'country-boundaries',
                 source: {
                     type: 'vector',
@@ -127,18 +135,33 @@
                 'source-layer': 'country_boundaries',
                 type: 'fill',
                 paint: {
-                    // TODO: Pass function to calculate color here?
-                    // Get main color from data
-                    'fill-color': generatePaint(),
-                    'fill-opacity': 0.4,
+                    'fill-color': generatePaintFillColor(),
+                    'fill-opacity': .1,
                 },
             },
+            
             'country-label'
         );
 
-        const isoValues = countryData.map(country => country.iso_3166_1);
+        map.addLayer({
+            'id': 'outline',
+            'type': 'line',
+            'source': {
+                'type': 'vector',
+                'url': 'mapbox://mapbox.country-boundaries-v1',
+            },
+            'source-layer': 'country_boundaries',
+            'layout': {},
+            'paint': {
+                'line-color': generatePaintFillColor(),
+                'line-width': 1 
+            }      
+        });
 
-        map.setFilter('country-boundaries', ["in", "iso_3166_1", ...isoValues]);
+        // const isoValues = countryData.map(country => country.iso_3166_1);
+
+        // map.setFilter('country-boundaries', ["in", "iso_3166_1", ...isoValues]);
+        // map.setFilter('outline', ["in", "iso_3166_1", ...isoValues]);
 
         });
 
@@ -152,7 +175,7 @@
 		let userInteracting = false;
 		let spinEnabled = true;
 
-        // TODO: fix user mobile interaction
+        // TODO: Fix user mobile interaction
 		function spinGlobe() {
 			const zoom = map.getZoom();
 			if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
@@ -208,7 +231,6 @@
         const nav = new pkg.NavigationControl();
 		map.addControl(nav, 'bottom-left');
 	});
-
 </script>
 
 <div class="map-wrap">
