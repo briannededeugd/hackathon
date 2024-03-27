@@ -2,7 +2,6 @@
 	import Navbar from "../components/Navbar.svelte"
 	import Worldmap from "../components/Worldmap.svelte";
   	import Navigation from '../components/Navigation.svelte';
-  	import { onMount } from 'svelte';
 
 	let theme = 'standard';
 
@@ -10,11 +9,6 @@
 	function toggleTheme() {
 		theme = theme === 'standard' ? 'dynamic' : 'standard';
 	}
-
-	// Example of using onMount to perform initialization
-	onMount(() => {
-		// You can perform any initialization here
-	});
 </script>
 
 <header>
