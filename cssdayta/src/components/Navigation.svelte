@@ -1,3 +1,11 @@
+
+<script context="module">
+    import { writable } from 'svelte/store';
+    export const selectedYearStore = writable(null);
+</script>
+
+
+
 <!-- Script for navigation bar -->
 <script>
     import { onMount } from 'svelte';
@@ -8,40 +16,42 @@
 
     let index = 0;
     let activeIndex = 0;
-    let selectedYear = null;
     let cssdayta = {};
 
-    
-    // Subscribe to cssdaytaStore when the component mounts
-    onMount(() => {
+     // Subscribe to cssdaytaStore when the component mounts
+     onMount(() => {
         const unsubscribe = cssdaytaStore.subscribe((value) => {
             cssdayta = value; // Update cssdayta when the store changes
-            console.log(cssdayta);
 
             // Set selectedYear to 2024 if it's not already set
-            if (!selectedYear && cssdayta && Object.keys(cssdayta).includes('2024')) {
+            if (!selectedYearStore && cssdayta && Object.keys(cssdayta).includes('2024')) {
                 showSlide(Object.keys(cssdayta).length - 1); // Start with year 2024 as default
             }
         });
-
 
         return unsubscribe; // Unsubscribe from the store when the component is destroyed
     });
 
     // Update CSS variables when selectedYear changes
     $: {
+        const selectedYear = $selectedYearStore; // Get the current value of selectedYear from the store
         if (selectedYear && cssdayta?.[selectedYear]?.color) {
             document.documentElement.style.setProperty('--assigned-color', cssdayta[selectedYear].color.hex);
         }
     }
 
+    $: console.log('Selected year:', $selectedYearStore);
+
     // Function to handle carousel navigation
     function showSlide(offset) {
         index = (index + offset + Object.keys(cssdayta).length) % Object.keys(cssdayta).length; // Calculate the available years and put in index
         activeIndex = index; // Set this index as the active one 
-        selectedYear = Object.keys(cssdayta)[index]; // Put the selected index in a selectedYear var
+        const newSelectedYear = Object.keys(cssdayta)[index]; // Put the selected index in a newSelectedYear var
+        selectedYearStore.set(newSelectedYear); // Set the selectedYear value in the writable store
     }
+
 </script>
+
 
   
   <nav>
@@ -85,11 +95,11 @@
         </button>
         <ul>
             {#each Object.keys(cssdayta) as year, i}
-                <li class:selected={i === activeIndex}><a href="{cssdayta[selectedYear].link}">{year}</a></li>
+                <li class:selected={i === activeIndex}><a href="{cssdayta[year].link}">{year}</a></li>
             {/each}
         </ul>
         <button aria-label="Next button" class="next" on:click={() => showSlide(1)}>
-            <img aria-hidden="true" focusable="false"src={nextArrow} alt="Next arrow icon">
+            <img aria-hidden="true" focusable="false" src={nextArrow} alt="Next arrow icon">
         </button>
     </div>
 </nav>
