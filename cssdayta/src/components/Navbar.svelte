@@ -9,6 +9,7 @@ let selectedIndex = 0;
 let carousel;
 let cssdayta = {};
 let selectedYear = 0;
+const cellCount = 10;
 
 
 onMount(() => {
@@ -21,21 +22,30 @@ onMount(() => {
  
 // Function to rotate the carousel
 function rotateCarousel() {
-const cellCount = 10;
-const angle = selectedIndex / cellCount * -360;
-dispatch('rotate', { angle });
+    const angle = selectedIndex / cellCount * -360;
+    dispatch('rotate', { angle });
 }
 
 // Event handler for the previous button
 function previous() {
-selectedIndex--;
-rotateCarousel();
+    if(selectedIndex == 0) {
+        selectedIndex = cellCount;
+    }
+
+    console.log('previous says "selectedIndex is '+selectedIndex+'"');
+    selectedIndex--;
+    rotateCarousel();
 }
 
 // Event handler for the next button
 function next() {
-selectedIndex++;
-rotateCarousel();
+    if(selectedIndex == cellCount - 1) {
+        selectedIndex = -1;
+    }
+
+    console.log('next says "selectedIndex is '+selectedIndex+'"');
+    selectedIndex++;
+    rotateCarousel();
 }
 
 onMount(rotateCarousel);
@@ -49,17 +59,18 @@ onMount(rotateCarousel);
       <img src="https://cssday.nl/_img/cssday-logo.svg" alt="CSS Day">
     </a>
     
+    <h2>
         {#each Object.keys(cssdayta) as year, i}
             {#if i === selectedIndex}
-                <h2>{cssdayta[year].title}</h2> 
+                {cssdayta[year].title}
             {/if}
         {/each}
-
+    </h2>
     <div class="carousel" >
         <ul bind:this={carousel} style="transform: translateZ(-320px) rotateY({selectedIndex * -36}deg)">
         
             {#each Object.keys(cssdayta) as year, i}
-                 <li class:selectedIndex={i === selectedIndex} style="--theme-color:{cssdayta[year].color.hex}"><a href="/">{year}</a></li>
+                 <li class={i === selectedIndex} style="--theme-color:{cssdayta[year].color.hex}"><a href="/">{year}</a></li>
             {/each}
  
         </ul>
