@@ -49,7 +49,6 @@
         const newSelectedYear = Object.keys(cssdayta)[index]; // Put the selected index in a newSelectedYear var
         selectedYearStore.set(newSelectedYear); // Set the selectedYear value in the writable store
     }
-
 </script>
 
 
@@ -106,6 +105,7 @@
 
   <!-- Styling navigation bar -->
   <style>
+
       h1 {
           display: none;
       }
@@ -113,7 +113,7 @@
       h2 {
         margin: 0;
         padding: 0.5em;
-        border: 3px solid var(--assigned-color);
+        border: 3px solid var(--assigned-color, black);
       }
 
       nav {
@@ -131,7 +131,6 @@
           width: 3em;
           height: 1.6em;
           text-align: center;
-    
       }
 
     
@@ -143,19 +142,19 @@
           gap:0.5em;
   
           & button {
-              border: none;
-              background-color: var(--assigned-color);
-              border-radius: 0.5em;
-              width: 3.5em;
-              height: 4em;
-              cursor: pointer;
-              padding: 0;
-              margin: 0;
+            border: 3px solid var(--assigned-color, #000); /* Fallback black border */
+            background-color: var(--assigned-color);
+            border-radius: 0.5em;
+            width: 3.5em;
+            height: 4em;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
           }
 
           & button img {
-            width: 2em;
-            text-align: center;
+            width: 1.6em;
+            margin: auto;
           }
       }
   
@@ -168,7 +167,7 @@
     }
 
     svg {
-        fill: var(--assigned-color);
+        fill: var(--assigned-color, black);
         /* filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 1)); */
         /* background-color: white; */
     }
