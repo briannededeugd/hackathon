@@ -2,7 +2,7 @@
 	import pkg from 'mapbox-gl';
 	const { Map } = pkg;
 	import '/node_modules/mapbox-gl/dist/mapbox-gl.css';
-  	import {cssdaytaStore} from '../dataStore.js'
+  	import { cssdaytaStore } from '../dataStore.js'
 	import {selectedYearStore} from './Navigation.svelte'
 
 	let map;
@@ -10,6 +10,7 @@
 	let lng, lat, zoom;
     let cssdayta = {};
 	let selectedYear;
+    let selectedYearString;
 
 	lng = -71.224518;
 	lat = 42.213995;
@@ -22,33 +23,13 @@
 	
 	$: {
     unsubscribeSelectedYear = selectedYearStore.subscribe(value => {
-        
+        selectedYearString = value;
 		selectedYear = parseInt(value);
 		console.log("Selected year in Worldmap:", selectedYear);
         console.log(selectedYear);
-        // Use the selected year value where needed in your component
-        // if (map) {
-        //     updateMapLayer();
-        // }
+    
     });
-
-	// function updateMapLayer() {
-	// 	if (!selectedYear || !$cssdaytaStore[selectedYear]) {
-	// 		return;
-	// 	}
-
-	// 	const paintExpressions = generatePaintFillColor(selectedYear);
-
-	// 	// Ensure 'country_boundaries' layer exists before setting its paint property
-	// 	if (map.getLayer('boundaries')) {
-	// 		map.setPaintProperty('boundaries', 'fill-color', paintExpressions);
-	// 	} else {
-	// 		console.warn("Layer 'boundaries' not found.");
-	// 	}
-	// }
-
 }
-
 
     function checkTime() {
         const date = new Date();
@@ -112,12 +93,6 @@
 			center: [20, 40]
 		});
 		
-
-		// map.addSource('counties', {
-		// 	"type": "vector",
-		// 	"promoteId": {"original": "COUNTRY"}
-		// })
-
 		window.addEventListener('resize', function () {
 			if (window.innerWidth <= 768) {
 				map.setZoom(0.5); // Adjust zoom level for smaller screens
@@ -131,63 +106,86 @@
 		});
 
         map.on('mouseover', () => {
-            map.addLayer(
-                {
-					id: 'one',
-					source: {
-						type: 'vector',
-						url: 'mapbox://mapbox.country-boundaries-v1',
-					},
-					'source-layer': 'country_boundaries',
-					type: 'fill',
-					paint: {
-						'fill-color': 'white',
-						'fill-opacity': .3,
-					}, 
-            	},
-            	'country-label'
-        	);
+            // map.addLayer(
+            //     {
+			// 		id: 'one',
+			// 		source: {
+			// 			type: 'vector',
+			// 			url: 'mapbox://mapbox.country-boundaries-v1',
+			// 		},
+			// 		'source-layer': 'country_boundaries',
+			// 		type: 'fill',
+			// 		paint: {
+			// 			'fill-color': 'white',
+			// 			'fill-opacity': .3,
+			// 		}, 
+            // 	},
+            // 	'country-label'
+        	// );
 			
-			if (map.getLayer(`!'${selectedYear}'`)) {
-				map.removeLayer()
-			}
+			// if (map.getLayer(`!'${selectedYear}'`)) {
+			// 	map.removeLayer()
+			// }
 
-			console.log("get layer:", map.getLayer(`'${selectedYear}'`))
-		
+            console.log("get style", map.getStyle().layers)
 
-			map.addLayer({
-				id: `'${selectedYear}'`,
-				source: {
-					type: 'vector',
-					url: 'mapbox://mapbox.country-boundaries-v1',
-				},
-				'source-layer': 'country_boundaries',
-				type: 'fill',
-				paint: {
-					'fill-color': generatePaintFillColor(selectedYear),
-					'fill-opacity': 1,
-				},
-			}, 'country-label');
+            let lastElement = map.getStyle().layers.length - 3;
+            console.log(map.getStyle().layers[lastElement].id)
+            console.log("last element", lastElement);
+            
 
-			// map.on('style.load', () => {
-		
-			// });
+            // console.log(selectedYearString)            
+            // if (map.getStyle().layers[lastElement].id !== selectedYearString) {
+            //     // map.removeLayer(withId = selectedYearString);
+            //     map.removeSource(selectedYearString)
+            // }
+
+           
+            // const mapLayer = map.getLayer(selectedYearString)
+			// console.log("get layer:", mapLayer)
+
+            function timeOut() {
+                setTimeout(function() { 
+                map.addLayer({
+                    id: `'${selectedYearString}'`,
+                    source: {
+                        type: 'vector',
+                        url: 'mapbox://mapbox.country-boundaries-v1',
+                    },
+                    'source-layer': 'country_boundaries',
+                    type: 'fill',
+                    paint: {
+                        'fill-color': generatePaintFillColor(selectedYear),
+                        'fill-opacity': 1,
+                    },
+			}, 'country-label')}, 50);
+            }
+            
   
+            timeOut();
 
-			map.addLayer({
-				'id': 'outline',
-				'type': 'line',
-				'source': {
-					'type': 'vector',
-					'url': 'mapbox://mapbox.country-boundaries-v1',
-				},
-				'source-layer': 'country_boundaries',
-				'layout': {},
-				'paint': {
-					'line-color': 'black',
-					'line-width': .1, 
-				}      
-			});
+             function timeOutRemove() {
+                setTimeout(console.log(map.removeLayer(`'${parseInt(selectedYearString) - 1}'`)), 150);
+            }
+            
+            timeOutRemove();
+
+            
+			
+			// map.addLayer({
+			// 	'id': 'outline',
+			// 	'type': 'line',
+			// 	'source': {
+			// 		'type': 'vector',
+			// 		'url': 'mapbox://mapbox.country-boundaries-v1',
+			// 	},
+			// 	'source-layer': 'country_boundaries',
+			// 	'layout': {},
+			// 	'paint': {
+			// 		'line-color': 'black',
+			// 		'line-width': .1, 
+			// 	}      
+			// });
 
 		// // Check if the layer is recognized after loading
 		// updateMapLayer();
