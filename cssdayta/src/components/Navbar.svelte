@@ -8,7 +8,6 @@ const dispatch = createEventDispatcher();
 let selectedIndex = 0;
 let carousel;
 let cssdayta = {};
-let selectedYear = 0;
 const cellCount = 10;
 
 
@@ -56,7 +55,34 @@ onMount(rotateCarousel);
 <nav>
     <h1>CSS Day</h1>
     <a href="/" aria-label="CSS Day Logo">
-      <img src="https://cssday.nl/_img/cssday-logo.svg" alt="CSS Day">
+      <!-- <img src="https://cssday.nl/_img/cssday-logo.svg" alt="CSS Day"> -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 614 383" width="100%" height="100%">
+            <rect width="184" height="46" rx="7" ry="7"/>
+            <rect width="46" height="122" y="55" rx="7" ry="7"/>
+            <rect width="127" height="46" x="57" y="131" rx="7" ry="7"/>
+            <rect width="46" height="110" x="215" rx="7" ry="7"/>
+            <rect width="128" height="46" x="271" rx="7" ry="7"/>
+            <rect width="64" height="46" x="275" y="65" rx="7" ry="7"/>
+            <rect width="46" height="112" x="353" y="65" rx="7" ry="7"/>
+            <rect width="128" height="46" x="215" y="131" rx="7" ry="7"/>
+            <rect width="46" height="110" x="430" rx="7" ry="7"/>
+            <rect width="128" height="46" x="486" rx="7" ry="7"/>
+            <rect width="64" height="46" x="490" y="65" rx="7" ry="7"/>
+            <rect width="46" height="112" x="568" y="65" rx="7" ry="7"/>
+            <rect width="128" height="46" x="430" y="131" rx="7" ry="7"/>
+            <rect width="127" height="46" y="206" rx="7" ry="7"/>
+            <rect width="46" height="122" x="138" y="206" rx="7" ry="7"/>
+            <rect width="46" height="122" y="261" rx="7" ry="7"/>
+            <rect width="127" height="46" x="57" y="337" rx="7" ry="7"/>
+            <rect width="128" height="46" x="215" y="206" rx="7" ry="7"/>
+            <rect width="46" height="177" x="353" y="206" rx="7" ry="7"/>
+            <rect width="46" height="122" x="215" y="261" rx="7" ry="7"/>
+            <rect width="64" height="46" x="278" y="280" rx="7" ry="7"/>
+            <rect width="46" height="110" x="430" y="206" rx="7" ry="7"/>
+            <rect width="46" height="177" x="568" y="206" rx="7" ry="7"/>
+            <rect width="64" height="46" x="494" y="270" rx="7" ry="7"/>
+            <rect width="107" height="46" x="451" y="337" rx="7" ry="7"/>
+        </svg>
     </a>
     
     <h2>
@@ -77,8 +103,12 @@ onMount(rotateCarousel);
     </div>
     
     <p>
-        <button class="previous-button" on:click={previous}>Previous</button>
-        <button class="next-button" on:click={next}>Next</button>
+    {#each Object.keys(cssdayta) as year, i}
+        {#if i === selectedIndex}
+            <button class="previous-button" on:click={previous} style="--theme-color:{cssdayta[year].color.hex}">Previous</button>
+            <button class="next-button" on:click={next} style="--theme-color:{cssdayta[year].color.hex}">Next</button>
+        {/if}
+    {/each}
     </p>
 
 </nav>
@@ -91,7 +121,6 @@ onMount(rotateCarousel);
         justify-content: center;
         align-items: center;
         gap: 1em;
-        margin-top: 1em;
         z-index: 10;
         width: 100vw;
     }
@@ -110,7 +139,7 @@ onMount(rotateCarousel);
         margin: 0;
         text-align: center;
     }
-    
+
     p {
         text-align: center;
         margin: 0;
@@ -124,33 +153,39 @@ onMount(rotateCarousel);
             background-color: peru;
             box-shadow: 2px 2px rgb(40, 40, 40);
 
+            --theme-color: peru;
+            background: var(--theme-color);
         }
     }
+
     
     button:hover {
-        background-color: rgb(170, 106, 43);
+        filter: brightness(80%);
         color: antiquewhite;
         cursor: pointer;
     }
 
     button:active {
+        filter: brightness(90%);
         translate: 2px 2px;
         transition: .5s;
         box-shadow: none;
     }
 
-    a {
+    nav > a {
         display: flex;
         justify-content: center;
-        text-decoration: none;
-
-        & img {
+        padding: .5em;
+        padding-top: 1.5em;
+        & svg {
             width: clamp(5rem, 15%, 20%);
+            --theme-color: black;
         }
     }
 
     li a {
         color: antiquewhite;
+        text-decoration: none;
     }
 
 
