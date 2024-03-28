@@ -105,27 +105,10 @@
 			map.setFog({}); // Set the default atmosphere style
 		});
 
-        map.on('mouseover', () => {
-            // map.addLayer(
-            //     {
-			// 		id: 'one',
-			// 		source: {
-			// 			type: 'vector',
-			// 			url: 'mapbox://mapbox.country-boundaries-v1',
-			// 		},
-			// 		'source-layer': 'country_boundaries',
-			// 		type: 'fill',
-			// 		paint: {
-			// 			'fill-color': 'white',
-			// 			'fill-opacity': .3,
-			// 		}, 
-            // 	},
-            // 	'country-label'
-        	// );
-			
-			// if (map.getLayer(`!'${selectedYear}'`)) {
-			// 	map.removeLayer()
-			// }
+        map.on('mouseover', () => {			
+			if (map.getLayer(`!'${selectedYear}'`)) {
+				map.removeLayer()
+			}
 
             console.log("get style", map.getStyle().layers)
 
@@ -156,39 +139,19 @@
                     type: 'fill',
                     paint: {
                         'fill-color': generatePaintFillColor(selectedYear),
-                        'fill-opacity': 1,
+                        'fill-opacity': .7,
                     },
-			}, 'country-label')}, 50);
+			}, 'country-label')},1);
             }
             
   
             timeOut();
 
              function timeOutRemove() {
-                setTimeout(console.log(map.removeLayer(`'${parseInt(selectedYearString) - 1}'`)), 150);
+                setTimeout(console.log(map.removeLayer(`'${parseInt(selectedYearString) - 1}'`)), 3);
             }
             
             timeOutRemove();
-
-            
-			
-			// map.addLayer({
-			// 	'id': 'outline',
-			// 	'type': 'line',
-			// 	'source': {
-			// 		'type': 'vector',
-			// 		'url': 'mapbox://mapbox.country-boundaries-v1',
-			// 	},
-			// 	'source-layer': 'country_boundaries',
-			// 	'layout': {},
-			// 	'paint': {
-			// 		'line-color': 'black',
-			// 		'line-width': .1, 
-			// 	}      
-			// });
-
-		// // Check if the layer is recognized after loading
-		// updateMapLayer();
         });
         
 
